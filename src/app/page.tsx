@@ -1,65 +1,52 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArrowRight, CheckCircle } from 'lucide-react'
 
-export default function Home() {
+const features = [
+  'Portfolio profesional dalam hitungan menit',
+  'Generate CV ATS-friendly dengan AI',
+  'Custom domain & analytics',
+  'Gratis untuk mulai',
+]
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col">
+      <header className="border-b px-6 h-16 flex items-center justify-between max-w-6xl mx-auto w-full">
+        <span className="font-semibold text-lg">Portofolio.id</span>
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" asChild><Link href="/login">Masuk</Link></Button>
+          <Button asChild><Link href="/register">Mulai gratis</Link></Button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
+        <div className="max-w-2xl space-y-6">
+          <h1 className="text-5xl font-bold tracking-tight leading-tight">
+            Portfolio & CV profesional<br />
+            <span className="text-primary">dalam satu platform</span>
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Buat portfolio yang memukau, generate CV ATS-friendly dengan AI, dan dapatkan pekerjaan impian kamu.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button size="lg" asChild>
+              <Link href="/register">Mulai gratis <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/login">Sudah punya akun</Link>
+            </Button>
+          </div>
+          <ul className="flex flex-col sm:flex-row gap-3 justify-center text-sm text-muted-foreground">
+            {features.map(f => (
+              <li key={f} className="flex items-center gap-1.5">
+                <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
       </main>
     </div>
-  );
+  )
 }
