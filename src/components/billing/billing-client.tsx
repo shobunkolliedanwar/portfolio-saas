@@ -160,10 +160,9 @@ export function BillingClient({
 
             const script = document.createElement('script')
 
-            script.src =
-                process.env.NODE_ENV === 'production'
-                    ? 'https://app.midtrans.com/snap/snap.js'
-                    : 'https://app.sandbox.midtrans.com/snap/snap.js'
+            script.src = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true'
+                ? 'https://app.midtrans.com/snap/snap.js'
+                : 'https://app.sandbox.midtrans.com/snap/snap.js'
 
             script.setAttribute(
                 'data-client-key',
@@ -364,8 +363,8 @@ export function BillingClient({
                             {promoResult && (
                                 <p
                                     className={`text-xs ${promoResult.valid
-                                            ? 'text-green-600'
-                                            : 'text-destructive'
+                                        ? 'text-green-600'
+                                        : 'text-destructive'
                                         }`}
                                 >
                                     {
@@ -487,7 +486,7 @@ export function BillingClient({
                                     <span
                                         className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColor[
                                             tx.status
-                                            ] ?? ''
+                                        ] ?? ''
                                             }`}
                                     >
                                         {statusLabel[
