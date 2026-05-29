@@ -79,17 +79,35 @@ export function BasicInfoForm({ profile, onUpdate }: Props) {
         setAvatarLoading(true)
         const supabase = createClient()
         const ext = file.name.split('.').pop()
-        const path = `avatars/${profile.id}.${ext}`
+        // Ubah path: pakai folder per user-id
+        const path = `${profile.id}/avatar.${ext}`
 
         const { error: uploadError } = await supabase.storage
             .from('portfolio-assets')
             .upload(path, file, { upsert: true })
 
-        if (uploadError) { toast.error('Gagal upload foto'); setAvatarLoading(false); return }
+        if (uploadError) {
+            console.error('Upload error:', uploadError)
+            toast.error(`Gagal upload: ${uploadError.message}`)
+            setAvatarLoading(false)
+            return
+        }
 
-        const { data: { publicUrl } } = supabase.storage.from('portfolio-assets').getPublicUrl(path)
+        const { data: { publicUrl } } = supabase.storage
+            .from('portfolio-assets')
+            .getPublicUrl(path)
 
-        await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', profile.id)
+        const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ avatar_url: publicUrl })
+            .eq('id', profile.id)
+
+        if (updateError) {
+            toast.error('Gagal menyimpan URL foto')
+            setAvatarLoading(false)
+            return
+        }
+
         onUpdate({ ...profile, avatar_url: publicUrl })
         toast.success('Foto profil diperbarui!')
         setAvatarLoading(false)
