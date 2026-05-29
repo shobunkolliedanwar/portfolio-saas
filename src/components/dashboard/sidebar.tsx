@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
-    LayoutDashboard, User, Settings, LogOut, FileText, ChevronRight
+    LayoutDashboard, User, Settings, LogOut, FileText, ChevronRight, CreditCard
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { href: '/profile', icon: User, label: 'Profil & Portfolio' },
     { href: '/cv', icon: FileText, label: 'CV Generator', badge: 'Pro' },
+    { href: '/settings/billing', icon: CreditCard, label: 'Billing' },
     { href: '/settings', icon: Settings, label: 'Pengaturan' },
 ]
 
