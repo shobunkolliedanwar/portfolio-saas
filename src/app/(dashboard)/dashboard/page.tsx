@@ -122,7 +122,7 @@ export default async function DashboardPage() {
         },
     ]
 
-    const portfolioUrl = `portofolio.id/${profile.username}`
+    const portfolioUrl = `portfolio.id/${profile.username}`
 
     return (
         <div className="space-y-6">
