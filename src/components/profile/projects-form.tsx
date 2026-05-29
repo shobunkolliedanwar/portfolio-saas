@@ -9,27 +9,54 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Trash2, FolderOpen, X } from 'lucide-react'
+import { Plus, Trash2, FolderOpen, X, Lock } from 'lucide-react'
 import type { Project } from '@/types'
+import Link from 'next/link'
+import { PLANS } from '@/types'
 
 interface Props {
     projects: Project[]
     userId: string
+    plan: string
     onUpdate: (projects: Project[]) => void
 }
 
-export function ProjectsForm({ projects, userId, onUpdate }: Props) {
+export function ProjectsForm({ projects, userId, plan, onUpdate }: Props) {
     const [items, setItems] = useState<Project[]>(projects)
     const [saving, setSaving] = useState<string | null>(null)
     const [techInput, setTechInput] = useState<Record<string, string>>({})
 
+    const limit = PLANS[plan as keyof typeof PLANS]?.limits?.projects ?? 3
+    const isAtLimit = limit !== -1 && items.length >= limit
+    const isPro = plan === 'pro' || plan === 'business'
+
     async function addNew() {
+        if (isAtLimit) {
+            toast.error(`Paket Free hanya bisa menambah ${limit} proyek. Upgrade ke Pro untuk proyek tak terbatas.`)
+            return
+        }
         const supabase = createClient()
-        const { data, error } = await supabase
-            .from('projects')
-            .insert({ user_id: userId, title: '', description: '', tech_stack: [], is_featured: false, order_index: items.length })
-            .select().single()
-        if (!error && data) { const u = [...items, data]; setItems(u); onUpdate(u) }
+        const res = await fetch('/api/profile/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: '',
+                description: '',
+                tech_stack: [],
+                is_featured: false,
+                order_index: items.length,
+            }),
+        })
+
+        if (!res.ok) {
+            const err = await res.json()
+            toast.error(err.error)
+            return
+        }
+        const data = await res.json()
+        const u = [...items, data]
+        setItems(u)
+        onUpdate(u)
     }
 
     function updateItem(id: string, changes: Partial<Project>) {
@@ -74,10 +101,40 @@ export function ProjectsForm({ projects, userId, onUpdate }: Props) {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="font-medium">Proyek</h2>
-                    <p className="text-xs text-muted-foreground">Portfolio proyek yang sudah kamu kerjakan</p>
+                    <p className="text-xs text-muted-foreground">
+                        {isPro ? 'Proyek tak terbatas' : `${items.length} / ${limit} proyek`}
+                    </p>
                 </div>
-                <Button size="sm" onClick={addNew}><Plus className="h-4 w-4 mr-2" />Tambah</Button>
+                <Button size="sm" onClick={addNew} disabled={isAtLimit}>
+                    <Plus className="h-4 w-4 mr-2" />Tambah
+                </Button>
             </div>
+
+            {/* Progress bar */}
+            {!isPro && (
+                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                        className={`h-full rounded-full transition-all ${isAtLimit ? 'bg-destructive' : 'bg-primary'}`}
+                        style={{ width: `${Math.min((items.length / limit) * 100, 100)}%` }}
+                    />
+                </div>
+            )}
+
+            {/* Banner upgrade */}
+            {isAtLimit && (
+                <div className="flex items-center gap-3 bg-primary/5 border border-primary/20 rounded-xl p-4">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Lock className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-sm font-medium">Batas proyek Free tercapai</p>
+                        <p className="text-xs text-muted-foreground">Upgrade ke Pro untuk proyek tak terbatas</p>
+                    </div>
+                    <Button size="sm" asChild>
+                        <Link href="/settings/billing">Upgrade</Link>
+                    </Button>
+                </div>
+            )}
 
             {items.length === 0 && (
                 <div className="text-center py-12 border-2 border-dashed rounded-xl">

@@ -19,7 +19,8 @@ import { PortfolioPreview } from './portfolio-preview'
 import { ShareDialog } from './share-dialog'
 
 interface Props {
-    initialData: PortfolioData
+    initialData: PortfolioData,
+    plan: string
 }
 
 export function ProfileEditor({ initialData }: Props) {
@@ -132,6 +133,7 @@ export function ProfileEditor({ initialData }: Props) {
                             <SkillsForm
                                 skills={data.skills}
                                 userId={data.profile.id}
+                                plan={plan}
                                 onUpdate={(skills) => updateData({ skills })}
                             />
                         </TabsContent>
@@ -140,6 +142,7 @@ export function ProfileEditor({ initialData }: Props) {
                             <ProjectsForm
                                 projects={data.projects}
                                 userId={data.profile.id}
+                                plan={plan}
                                 onUpdate={(projects) => updateData({ projects })}
                             />
                         </TabsContent>
