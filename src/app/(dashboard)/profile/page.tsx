@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { ProfileEditor } from '@/components/profile/profile-editor'
+import { unstable_noStore as noStore } from 'next/cache'
 
 export default async function ProfilePage() {
+  noStore()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import crypto from 'crypto'
+import { revalidatePath } from 'next/cache'
 
 export async function POST(request: NextRequest) {
     const body = await request.json()
@@ -82,6 +83,10 @@ export async function POST(request: NextRequest) {
         if (promoCode) {
             await supabase.rpc('increment_promo_usage', { code: promoCode })
         }
+
+        revalidatePath('/profile')
+        revalidatePath('/dashboard')
+        revalidatePath('/settings/billing')
     }
 
     return NextResponse.json({ success: true })

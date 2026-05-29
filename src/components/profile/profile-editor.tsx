@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -19,15 +19,34 @@ import { PortfolioPreview } from './portfolio-preview'
 import { ShareDialog } from './share-dialog'
 
 interface Props {
-    initialData: PortfolioData,
+    initialData: PortfolioData
     plan: string
 }
 
-export function ProfileEditor({ initialData, plan }: Props) {
+export function ProfileEditor({ initialData, plan: initialPlan }: Props) {
     const [data, setData] = useState<PortfolioData>(initialData)
     const [publishing, setPublishing] = useState(false)
     const [showShare, setShowShare] = useState(false)
     const [showPreview, setShowPreview] = useState(true)
+    // Plan di-fetch ulang client-side agar selalu fresh
+    const [plan, setPlan] = useState<string>(initialPlan)
+    const [planLoading, setPlanLoading] = useState(true)
+
+    // Fetch plan terbaru dari server setiap kali halaman dibuka
+    useEffect(() => {
+        async function fetchPlan() {
+            try {
+                const res = await fetch('/api/profile/plan', { cache: 'no-store' })
+                const data = await res.json()
+                setPlan(data.plan)
+            } catch {
+                setPlan(initialPlan)
+            } finally {
+                setPlanLoading(false)
+            }
+        }
+        fetchPlan()
+    }, [initialPlan])
 
     const updateData = useCallback((partial: Partial<PortfolioData>) => {
         setData(prev => ({ ...prev, ...partial }))
@@ -59,10 +78,19 @@ export function ProfileEditor({ initialData, plan }: Props) {
                 <div>
                     <h1 className="text-2xl font-semibold">Profil & Portfolio</h1>
                     <p className="text-muted-foreground text-sm mt-0.5">
-                        portfolio.id/<span className="font-mono">{data.profile.username}</span>
+                        portofolio.id/<span className="font-mono">{data.profile.username}</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
+                    {/* Badge plan */}
+                    {!planLoading && (
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${plan === 'pro'
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-muted text-muted-foreground'
+                            }`}>
+                            {plan === 'pro' ? '✦ Pro' : 'Free'}
+                        </span>
+                    )}
                     <Button
                         variant="outline"
                         size="sm"
@@ -94,7 +122,6 @@ export function ProfileEditor({ initialData, plan }: Props) {
 
             {/* Layout: editor + preview */}
             <div className={`flex gap-6 ${showPreview ? 'lg:grid lg:grid-cols-2' : ''}`}>
-                {/* Editor panel */}
                 <div className="flex-1 min-w-0">
                     <Tabs defaultValue="basic">
                         <TabsList className="w-full grid grid-cols-3 lg:grid-cols-6 mb-4">
@@ -112,7 +139,6 @@ export function ProfileEditor({ initialData, plan }: Props) {
                                 onUpdate={(profile) => updateData({ profile })}
                             />
                         </TabsContent>
-
                         <TabsContent value="experience">
                             <ExperienceForm
                                 experiences={data.experiences}
@@ -120,7 +146,6 @@ export function ProfileEditor({ initialData, plan }: Props) {
                                 onUpdate={(experiences) => updateData({ experiences })}
                             />
                         </TabsContent>
-
                         <TabsContent value="education">
                             <EducationForm
                                 educations={data.educations}
@@ -128,25 +153,28 @@ export function ProfileEditor({ initialData, plan }: Props) {
                                 onUpdate={(educations) => updateData({ educations })}
                             />
                         </TabsContent>
-
                         <TabsContent value="skills">
-                            <SkillsForm
-                                skills={data.skills}
-                                userId={data.profile.id}
-                                plan={plan}
-                                onUpdate={(skills) => updateData({ skills })}
-                            />
+                            {planLoading
+                                ? <div className="animate-pulse h-32 bg-muted rounded-xl" />
+                                : <SkillsForm
+                                    skills={data.skills}
+                                    userId={data.profile.id}
+                                    plan={plan}
+                                    onUpdate={(skills) => updateData({ skills })}
+                                />
+                            }
                         </TabsContent>
-
                         <TabsContent value="projects">
-                            <ProjectsForm
-                                projects={data.projects}
-                                userId={data.profile.id}
-                                plan={plan}
-                                onUpdate={(projects) => updateData({ projects })}
-                            />
+                            {planLoading
+                                ? <div className="animate-pulse h-32 bg-muted rounded-xl" />
+                                : <ProjectsForm
+                                    projects={data.projects}
+                                    userId={data.profile.id}
+                                    plan={plan}
+                                    onUpdate={(projects) => updateData({ projects })}
+                                />
+                            }
                         </TabsContent>
-
                         <TabsContent value="template">
                             <TemplateSelector
                                 profile={data.profile}
@@ -156,7 +184,6 @@ export function ProfileEditor({ initialData, plan }: Props) {
                     </Tabs>
                 </div>
 
-                {/* Preview panel */}
                 {showPreview && (
                     <div className="hidden lg:block">
                         <div className="sticky top-0">

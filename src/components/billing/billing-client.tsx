@@ -214,7 +214,7 @@ export function BillingClient({
                         'Pembayaran berhasil! Akun kamu sudah diupgrade ke Pro.'
                     )
 
-                    window.location.reload()
+                    window.location.href = '/profile'
                 },
 
                 onPending: () => {
