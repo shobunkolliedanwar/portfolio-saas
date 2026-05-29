@@ -152,7 +152,7 @@ export function BasicInfoForm({ profile, onUpdate }: Props) {
                         <div className="space-y-1.5">
                             <Label>Username</Label>
                             <div className="flex">
-                                <span className="inline-flex items-center px-3 text-xs bg-muted border border-r-0 rounded-l-md text-muted-foreground">portofolio.id/</span>
+                                <span className="inline-flex items-center px-3 text-xs bg-muted border border-r-0 rounded-l-md text-muted-foreground">portfolio.id/</span>
                                 <Input className="rounded-l-none" {...register('username')} placeholder="budisantoso" />
                             </div>
                             {errors.username && <p className="text-xs text-destructive">{errors.username.message}</p>}

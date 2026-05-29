@@ -13,7 +13,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b px-6 h-16 flex items-center justify-between max-w-6xl mx-auto w-full">
-        <span className="font-semibold text-lg">Portofolio.id</span>
+        <span className="font-semibold text-lg">Portfolio.id</span>
         <div className="flex items-center gap-3">
           <Button variant="ghost" asChild><Link href="/login">Masuk</Link></Button>
           <Button asChild><Link href="/register">Mulai gratis</Link></Button>

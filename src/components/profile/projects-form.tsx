@@ -74,7 +74,7 @@ export function ProjectsForm({ projects, userId, onUpdate }: Props) {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="font-medium">Proyek</h2>
-                    <p className="text-xs text-muted-foreground">Portofolio proyek yang sudah kamu kerjakan</p>
+                    <p className="text-xs text-muted-foreground">Portfolio proyek yang sudah kamu kerjakan</p>
                 </div>
                 <Button size="sm" onClick={addNew}><Plus className="h-4 w-4 mr-2" />Tambah</Button>
             </div>

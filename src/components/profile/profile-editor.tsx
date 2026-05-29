@@ -58,7 +58,7 @@ export function ProfileEditor({ initialData }: Props) {
                 <div>
                     <h1 className="text-2xl font-semibold">Profil & Portfolio</h1>
                     <p className="text-muted-foreground text-sm mt-0.5">
-                        portofolio.id/<span className="font-mono">{data.profile.username}</span>
+                        portfolio.id/<span className="font-mono">{data.profile.username}</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
