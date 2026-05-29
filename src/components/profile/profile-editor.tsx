@@ -23,7 +23,7 @@ interface Props {
     plan: string
 }
 
-export function ProfileEditor({ initialData }: Props) {
+export function ProfileEditor({ initialData, plan }: Props) {
     const [data, setData] = useState<PortfolioData>(initialData)
     const [publishing, setPublishing] = useState(false)
     const [showShare, setShowShare] = useState(false)
