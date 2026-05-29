@@ -58,9 +58,7 @@ export default async function PublicPortfolioPage({ params }: Props) {
     }
 
     // Fire and forget
-    void supabase.rpc('increment_portfolio_views', {
-        profile_id: profile.id,
-    })
+    await supabase.rpc('increment_portfolio_views', { profile_id: profile.id })
 
     const [
         { data: experiences },
